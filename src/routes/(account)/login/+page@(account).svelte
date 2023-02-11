@@ -2,7 +2,6 @@
   import { auth } from "../../../firebase.js";
   import FaGoogle from "svelte-icons/fa/FaGoogle.svelte";
   import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-  import { redirect } from "@sveltejs/kit";
 
   const provider = new GoogleAuthProvider();
 
@@ -16,7 +15,8 @@
       const user = result.user;
       // IdP data available using getAdditionalUserInfo(result)
       // ...
-      redirect(302, "/");
+      // redirect to home page
+        window.location.href = "/"
     })
     .catch((error) => {
       // Handle Errors here.

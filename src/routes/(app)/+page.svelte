@@ -2,18 +2,24 @@
   import { fly, fade } from "svelte/transition";
   import Post from "../../components/posts/post.svelte";
   import { auth } from "../../firebase.js";
-  import { redirect } from "@sveltejs/kit"
+  import { onMount } from "svelte";
+  import { user, twoots } from "../../stores.js";
 
-  // if (!auth.currentUser) {
-  //   throw redirect(302, "/login");
-  // }
+  // redirect to login if not logged in#
+  
+  onMount(() => {
+    auth.onAuthStateChanged((userData) => {
+      if (!userData) {
+        window.location.href = "/login";
+      } else {
+        $user = userData;
+      }
+  })});
+  
   let count = 0;
   let text = "";
   let err = false;
   let errContent = "";
-  $: posts = [
-    "This is a test post to see how well the post feature will work. This post will be more than 1 line long in order to see just how well the overflow works.",
-  ];
   
   const updateCount = () => {
     count = text.length;
@@ -38,6 +44,9 @@
     updateCount();
     posts = posts;
   };
+
+  console.log(auth)
+  
 
 </script>
 
@@ -103,13 +112,12 @@
       >Submit</button
     >
   </section>
-
   <section
     class=" h-full flex flex-col justify-start min-w-[300px] w-[40vw] mx-auto mt-8"
   >
     <h1 class="text-5xl my-3 font-bold">Posts</h1>
-    {#each posts as post}
-      <Post content={post} />
+    {#each $twoots as twoot}
+      <Post content={twoot} />
     {/each}
   </section>
 </main>

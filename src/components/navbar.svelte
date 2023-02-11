@@ -1,8 +1,15 @@
 <script>
   import { fly, fade } from "svelte/transition";
   import FaEnvelope from "svelte-icons/fa/FaEnvelope.svelte";
-  import { theme } from "../stores.js";
+  import { theme, user } from "../stores.js";
   import Cookies from "js-cookie";
+  import { auth } from "../firebase.js";
+
+  const logout = () => {
+    auth.signOut().then(() => {
+      window.location.href = "/login";
+    });
+  };
 
   let newTheme = $theme;
   let showMenu = false;
@@ -35,7 +42,7 @@
     <h2 class="text-2xl font-bold">Twooter!</h2>
   </div>
   <div class="navbar-end">
-    <div class="h-8 w-8 cursor-pointer">
+    <div class="h-6 w-6 cursor-pointer">
       <FaEnvelope />
     </div>
   </div>
@@ -56,7 +63,7 @@
       </div>
       <div>
         <div class="ml-4">
-          <p class="font-semibold text-xl">Username</p>
+          <p class="font-semibold text-xl">{$user.displayName}</p>
           <p>IDK Yet</p>
         </div>
       </div>
@@ -84,13 +91,13 @@
         Settings
       </li>
       </a>
-      <a href="/login">
+      <p on:click={() => logout()} on:keydown={(e) => {if (e.key === "enter") {console.log("idk")}}}>
         <li
         class="py-4 w-full border-y-2 border-y-base-100 hover:bg-base-100 cursor-pointer"
       >
         Logout
       </li>
-      </a>
+      </p>
       
     </ul>
     <select
