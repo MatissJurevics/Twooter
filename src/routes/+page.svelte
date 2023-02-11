@@ -1,12 +1,10 @@
 <script>
   import { fly, fade } from "svelte/transition";
-  import FaEnvelope from 'svelte-icons/fa/FaEnvelope.svelte'
 
   let count = 0;
   let text = "";
   let err = false;
   let errContent = "";
-  let showMenu = false;
   $: posts = [
     "This is a test post to see how well the post feature will work. This post will be more than 1 line long in order to see just how well the overflow works.",
   ];
@@ -35,34 +33,8 @@
     posts = posts;
   };
 
-  const toggleMenu = () => {
-    showMenu = !showMenu;
-  }
 </script>
 
-<nav class="navbar bg-base-200 px-8">
-  <div class="navbar-start">
-    <button class="w-8 h-8 rounded-full bg-white cursor-pointer" on:click={() => toggleMenu()}>
-    </button>
-  </div>
-  <div class="navbar-middle">
-    <h2 class="text-2xl font-bold">Twooter!</h2>
-  </div>
-  <div class="navbar-end">
-    <div class="h-8 w-8 cursor-pointer">
-      <FaEnvelope />
-    </div>
-  </div>
-</nav>
-
-{#if showMenu}
-  <div class="h-[100vh] min-w-[300px] w-40vw bg-base-200 rounded-r-xl shadow-xl top-0 left-0 fixed" transition:fly={{ x:-500, duration: 500}}>
-    <div class="flex">
-      <div></div>
-      <div></div>
-    </div>
-  </div>
-{/if}
 
 
 
