@@ -1,5 +1,4 @@
 <script>
-  import { select_option } from "svelte/internal";
   import { fly, fade } from "svelte/transition";
   import FaEnvelope from 'svelte-icons/fa/FaEnvelope.svelte'
 
@@ -43,9 +42,8 @@
 
 <nav class="navbar bg-base-200 px-8">
   <div class="navbar-start">
-    <div class="w-8 h-8 rounded-full bg-white cursor-pointer" on:click={() => toggleMenu()}>
-      
-    </div>
+    <button class="w-8 h-8 rounded-full bg-white cursor-pointer" on:click={() => toggleMenu()}>
+    </button>
   </div>
   <div class="navbar-middle">
     <h2 class="text-2xl font-bold">Twooter!</h2>
