@@ -1,10 +1,10 @@
 <script>
   import { fly, fade } from "svelte/transition";
-  import Post from "../components/posts/post.svelte";
-  // import { auth } from "../firebase.js";
+  import Post from "../../components/posts/post.svelte";
+  import { auth } from "../../firebase.js";
   import { redirect } from "@sveltejs/kit"
 
-  // if (!auth.getInstance().getCurrentUser()) {
+  // if (!auth.currentUser) {
   //   throw redirect(302, "/login");
   // }
   let count = 0;
@@ -46,7 +46,7 @@
 
 {#if err}
   <div
-    class="alert alert-error shadow-lg absolute"
+    class="alert alert-error shadow-lg absolute top-24"
     transition:fly={{ y: -200, duration: 500 }}
   >
     <div>
@@ -69,19 +69,14 @@
 
 <main class="pt-24">
   <section
-    class="w-full h-96 flex flex-col justify-center align-middle min-w-[400px] w-[50vw] mx-auto"
+    class=" h-96 flex flex-col justify-center align-middle min-w-[300px] w-[40vw] mx-auto"
   >
     <h2 class="text-2xl font-medium py-3">Whats on your mind today?</h2>
     <div class="w-full relative">
       <textarea
-        class="border- outline-none rounded-3xl p-3 w-full h-64 resize-none text-xl font-light bg-base-300"
+        class="border- outline-none rounded-3xl p-3 w-full h-64 resize-none text-xl font-light bg-base-300 focus:border-[2px] border-base-content/20"
         bind:value={text}
         on:input={() => updateCount()}
-        on:keydown={(e) => {
-          if (e.key == "Enter") {
-            sendPost();
-          }
-        }}
         name=""
         id=""
         placeholder="Write something..."
@@ -110,7 +105,7 @@
   </section>
 
   <section
-    class="w-full h-full flex flex-col justify-start min-w-[400px] w-[50vw] mx-auto mt-8"
+    class=" h-full flex flex-col justify-start min-w-[300px] w-[40vw] mx-auto mt-8"
   >
     <h1 class="text-5xl my-3 font-bold">Posts</h1>
     {#each posts as post}

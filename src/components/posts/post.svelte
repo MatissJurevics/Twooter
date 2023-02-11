@@ -22,5 +22,5 @@
     </div>
   </div>
 
-  <p class="text-xl w-full font-light break-words overflow-hidden">{content}</p>
+  <p class="text-xl w-full font-light break-words overflow-hidden whitespace-pre-wrap">{content}</p>
 </article>
