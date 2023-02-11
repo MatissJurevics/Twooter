@@ -1,38 +1,29 @@
-# create-svelte
+# Twooter - A Twitter clone
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+![Twooter](./Twooter.png)
 
-## Creating a project
+## Introduction
 
-If you're seeing this, you've probably already done this step. Congrats!
+Twooter is a Twitter clone that allows you to send short-form messages, images, and videos to your followers. It is a full-stack application that uses the following technologies:
+ - Svelte / Sveltekit
+ - Tailwind CSS
+ - DaisyUI
+ - Firebase
+ - Svelte-Icons
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Getting Started
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+In order to run this application, you need to have Node.js installed. You can download it from [here](https://nodejs.org/en/download/). Once you have Node.js installed, you can clone this repository and run the following commands:
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+yarn install # Install dependencies
+yarn dev # Run the application
 ```
 
-## Building
+## Contributing
 
-To create a production version of your app:
+Feel free to open a pull request if you would like to contribute to this project. If you have any questions, feel free to open an issue.
 
-```bash
-npm run build
-```
+## License
 
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+This project is licensed under the MIT License
