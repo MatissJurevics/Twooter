@@ -1,6 +1,12 @@
 <script>
   import { fly, fade } from "svelte/transition";
+  import Post from "../components/posts/post.svelte";
+  // import { auth } from "../firebase.js";
+  import { redirect } from "@sveltejs/kit"
 
+  // if (!auth.getInstance().getCurrentUser()) {
+  //   throw redirect(302, "/login");
+  // }
   let count = 0;
   let text = "";
   let err = false;
@@ -8,7 +14,7 @@
   $: posts = [
     "This is a test post to see how well the post feature will work. This post will be more than 1 line long in order to see just how well the overflow works.",
   ];
-
+  
   const updateCount = () => {
     count = text.length;
   };
@@ -61,7 +67,7 @@
   </div>
 {/if}
 
-<main>
+<main class="pt-24">
   <section
     class="w-full h-96 flex flex-col justify-center align-middle min-w-[400px] w-[50vw] mx-auto"
   >
@@ -108,27 +114,7 @@
   >
     <h1 class="text-5xl my-3 font-bold">Posts</h1>
     {#each posts as post}
-      <article class="my-4 w-full min-h-64 bg-base-200 p-4 rounded-xl"  transition:fade={{ duration: 200 }}
-      >
-        <div class="flex flex-row justify-between mb-4">
-          <div class="flex flex-row">
-            <div class="h-12 w-12 rounded-full bg-base-300 mr-4" />
-            <div>
-              <h3 class="font-semibold cursor-pointer hover:font-bold">
-                Username
-              </h3>
-              <p class="font-light text-sm ">01/01/2002</p>
-            </div>
-          </div>
-
-          <div class="flex flex-col justify-center align-middle cursor-pointer">
-            <div class="h-8 w-4 rounded-full bg-base-300" />
-          </div>
-        </div>
-
-        <p class="text-xl w-full font-light break-words overflow-hidden">{post}</p>
-        
-      </article>
+      <Post content={post} />
     {/each}
   </section>
 </main>

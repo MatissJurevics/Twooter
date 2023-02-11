@@ -1,9 +1,17 @@
 <script>
-    import { fly } from "svelte/transition";
+    import { fly, fade } from "svelte/transition";
     import FaEnvelope from 'svelte-icons/fa/FaEnvelope.svelte'
     import { theme } from "../stores.js";
-    
+    import Cookies from 'js-cookie';
+
+
+    let newTheme = $theme
     let showMenu = false;
+
+    const updateTheme = () => {
+        $theme = newTheme;
+        Cookies.set('theme', newTheme);
+    }
     
     const toggleMenu = () => {
         showMenu = !showMenu;
@@ -26,7 +34,7 @@
   </nav>
   
   {#if showMenu}
-    <div class="h-[100vh] min-w-[300px] w-40vw bg-base-200 rounded-r-xl shadow-xl top-0 left-0 fixed z-20 p-8" transition:fly={{ x:-500, duration: 500}}>
+    <div class="h-[100vh] min-w-[300px] w-40vw bg-base-200 rounded-r-xl shadow-xl top-0 left-0 fixed z-20 p-8" transition:fly={{ x:-500, duration: 300}}>
         <div class="flex flex-row">
           <div>
             <img src="https://picsum.photos/200" alt="" class="h-12 w-12 rounded-full">
@@ -45,13 +53,16 @@
             <li class="py-4 w-full border-y-2 border-y-base-100 hover:bg-base-100 cursor-pointer">Settings</li>
             <li class="py-4 w-full border-y-2 border-y-base-100 hover:bg-base-100 cursor-pointer">Logout</li>
         </ul>
-        <select class="select absolute bottom-4 left-4" name="theme" bind:value={$theme} id="">
+        <select class="select absolute bottom-4 left-4 select-ghost" name="theme" bind:value={newTheme} on:change={() => updateTheme()} id="">
             <option value="dark">Dark</option>
             <option value="light">Light</option>
-            <option value="night">night</option>
-            <option value="fantasy">fantasy</option>
-            <option value="corporate">corporate</option>
+            <option value="night">Night</option>
+            <option value="fantasy">Fantasy</option>
+            <option value="corporate">Corporate</option>
         </select>
+    </div>
+    <div class="z-10 bg-black/10 h-screen w-screen absolute top-0 left-0" on:keydown={(e) => {if (e.key = "escape") {toggleMenu()}}} on:click={() => toggleMenu()} transition:fade>
+
     </div>
   
     
