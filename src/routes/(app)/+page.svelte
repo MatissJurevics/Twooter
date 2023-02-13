@@ -3,7 +3,7 @@
     import { auth, db } from "../../firebase.js";
   import { onMount } from "svelte";
   import { user, twoots } from "../../stores.js";
-  import { collection, query, limit, getDocs, doc, getDoc, addDoc } from "firebase/firestore";
+  import { collection, query, limit, getDocs, doc, getDoc, addDoc, Timestamp, orderBy, onSnapshot } from "firebase/firestore";
   // Importing Components
   import Post from "../../components/posts/post.svelte";
   import Error from "../../components/error/error.svelte";
@@ -24,22 +24,31 @@
         let docSnap = await getDoc(docRef)
 
         $user = docSnap.data()
+        
       }
   })});
 
   // load twoots from firestore
   const getTwoots = async () => {
     const twootRef = collection(db, "Twoots")
-    const q = query(twootRef, limit(10));
+    const q = query(twootRef, limit(10), orderBy("createdAt", "asc"));
     const querySnapshot = await getDocs(q);
+    $twoots = [];
 
     querySnapshot.forEach((doc) => {
-      console.log(doc.data())
       $twoots = [doc.data(), ...$twoots];
     });
 
     return $twoots;
   };
+
+  let unsub = onSnapshot(collection(db, "Twoots"), (docs) => {
+    $twoots = [];
+    docs.forEach((doc) => {
+      $twoots = [doc.data(), ...$twoots];
+    });
+    console.log($twoots);
+  });
 
   // update the wordcount for the wordcounter in the textbox to work
   const updateCount = () => {
@@ -60,14 +69,15 @@
       handleError("Text is invalid (either too long or too short)");
       return;
     }
-    let userRef = doc(db, "Users", $user.uid);
+    let userRef = doc(db, "Users", "l6dOY7tIpidTxYxwjdQA1NgZ1Z12");
     let data = {
       creator: userRef,
+      createdAt: Timestamp.now(),
       likes: [],
       textContent: text,
     }
-    await addDoc(doc(db, "Twoots"), data)
-    $twoots = [data, ...$twoots]
+    let docRef = collection(db, "Twoots")
+    await addDoc(docRef, data)
     text = "";
     updateCount();
   };
@@ -129,7 +139,6 @@
     {:then two} 
       {#each $twoots as twoot}
         <Post info={twoot} />
-
       {/each}
     {/await}
     
