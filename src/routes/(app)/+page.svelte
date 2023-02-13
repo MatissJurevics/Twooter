@@ -1,9 +1,10 @@
 <script>
   import { fly, fade } from "svelte/transition";
   import Post from "../../components/posts/post.svelte";
-  import { auth } from "../../firebase.js";
+  import { auth, db } from "../../firebase.js";
   import { onMount } from "svelte";
   import { user, twoots } from "../../stores.js";
+  import { collection, query, where, getDocs } from "firebase/firestore";
 
   // redirect to login if not logged in#
   
@@ -15,6 +16,19 @@
         $user = userData;
       }
   })});
+  // get twoots from db in descending chronological order
+  const twootRef = collection(db, "Twoots")
+  const q = query(twootRef);
+  // get twoots
+  const getTwoots = async () => {
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      console.log(doc.data())
+      $twoots = [doc.data(), ...$twoots];
+    });
+    return $twoots;
+  };
+
   
   let count = 0;
   let text = "";
@@ -39,13 +53,11 @@
       handleError("Text is invalid (either too long or too short)");
       return;
     }
-    posts.unshift(text);
+    $twoots = [ text, ...$twoots];
     text = "";
     updateCount();
-    posts = posts;
   };
 
-  console.log(auth)
   
 
 </script>
@@ -116,9 +128,17 @@
     class=" h-full flex flex-col justify-start min-w-[300px] w-[40vw] mx-auto mt-8"
   >
     <h1 class="text-5xl my-3 font-bold">Posts</h1>
-    {#each $twoots as twoot}
-      <Post content={twoot} />
-    {/each}
+    
+    {#await getTwoots()}
+      <p>loading...</p>
+    {:then two} 
+      {#each $twoots as twoot}
+        <Post info={twoot} />
+
+      {/each}
+    {/await}
+    
+    
   </section>
 </main>
 

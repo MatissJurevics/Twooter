@@ -1,7 +1,7 @@
 <script>
   import { auth } from "../../../firebase.js";
   import FaGoogle from "svelte-icons/fa/FaGoogle.svelte";
-  import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+  import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
   const provider = new GoogleAuthProvider();
 
@@ -37,9 +37,9 @@
     class="min-h-[400px] min-w-[300px] bg-base-300 h-[60vh] w-[40vw] rounded-2xl flex flex-col justify-center items-center"
   >
     <h1 class="text-3xl font-bold mb-4">Login</h1>
-    <input type="text" class="input" placeholder="Email Address..." />
-    <input type="password" class="input mt-4" placeholder="Password..." />
-    <button class="btn btn-primary mt-4">Login</button>
+    <input disabled type="text" class="input" placeholder="Email Address..." />
+    <input disabled type="password" class="input mt-4" placeholder="Password..." />
+    <button disabled class="btn btn-primary mt-4">Login</button>
     <button on:click={() => googleLogin()} class="btn btn-secondary mt-4"
       ><span class="w-6 h-6 mr-2"><FaGoogle /></span> Sign in with Google
     </button>

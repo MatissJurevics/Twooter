@@ -27,7 +27,7 @@
 <nav class="navbar bg-base-200 px-8 fixed z-10">
   <div class="navbar-start">
     <img
-      src="https://picsum.photos/200"
+      src="{$user.photoURL}"
       class="w-8 h-8 rounded-full bg-white cursor-pointer"
       alt="Profile"
       on:click={() => toggleMenu()}
@@ -56,7 +56,7 @@
     <div class="flex flex-row">
       <div>
         <img
-          src="https://picsum.photos/200"
+          src="{$user.photoURL}"
           alt=""
           class="h-12 w-12 rounded-full"
         />
