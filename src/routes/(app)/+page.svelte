@@ -1,40 +1,47 @@
 <script>
-  import { fly, fade } from "svelte/transition";
-  import Post from "../../components/posts/post.svelte";
-  import { auth, db } from "../../firebase.js";
+  // Importing Libraries
+    import { auth, db } from "../../firebase.js";
   import { onMount } from "svelte";
   import { user, twoots } from "../../stores.js";
-  import { collection, query, where, getDocs } from "firebase/firestore";
-
-  // redirect to login if not logged in#
+  import { collection, query, limit, getDocs, doc, getDoc, addDoc } from "firebase/firestore";
+  // Importing Components
+  import Post from "../../components/posts/post.svelte";
+  import Error from "../../components/error/error.svelte";
   
-  onMount(() => {
-    auth.onAuthStateChanged((userData) => {
-      if (!userData) {
-        window.location.href = "/login";
-      } else {
-        $user = userData;
-      }
-  })});
-  // get twoots from db in descending chronological order
-  const twootRef = collection(db, "Twoots")
-  const q = query(twootRef);
-  // get twoots
-  const getTwoots = async () => {
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      console.log(doc.data())
-      $twoots = [doc.data(), ...$twoots];
-    });
-    return $twoots;
-  };
-
   
   let count = 0;
   let text = "";
   let err = false;
   let errContent = "";
-  
+
+
+  onMount(() => {
+    auth.onAuthStateChanged(async (userData) => {
+      if (!userData) {
+        window.location.href = "/login";
+      } else {
+        let docRef = doc(db, "Users", userData.uid)
+        let docSnap = await getDoc(docRef)
+
+        $user = docSnap.data()
+      }
+  })});
+
+  // load twoots from firestore
+  const getTwoots = async () => {
+    const twootRef = collection(db, "Twoots")
+    const q = query(twootRef, limit(10));
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      console.log(doc.data())
+      $twoots = [doc.data(), ...$twoots];
+    });
+
+    return $twoots;
+  };
+
+  // update the wordcount for the wordcounter in the textbox to work
   const updateCount = () => {
     count = text.length;
   };
@@ -48,12 +55,19 @@
     }, 3000);
   };
 
-  const sendPost = () => {
+  const sendPost = async () => {
     if (text.length >= 256 || text.length == 0) {
       handleError("Text is invalid (either too long or too short)");
       return;
     }
-    $twoots = [ text, ...$twoots];
+    let userRef = doc(db, "Users", $user.uid);
+    let data = {
+      creator: userRef,
+      likes: [],
+      textContent: text,
+    }
+    await addDoc(doc(db, "Twoots"), data)
+    $twoots = [data, ...$twoots]
     text = "";
     updateCount();
   };
@@ -66,26 +80,7 @@
 
 
 {#if err}
-  <div
-    class="alert alert-error shadow-lg absolute top-24"
-    transition:fly={{ y: -200, duration: 500 }}
-  >
-    <div>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="stroke-current flex-shrink-0 h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        ><path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-        /></svg
-      >
-      <span>{errContent}</span>
-    </div>
-  </div>
+  <Error message={errContent} />
 {/if}
 
 <main class="pt-24">

@@ -63,7 +63,7 @@
       </div>
       <div>
         <div class="ml-4">
-          <p class="font-semibold text-xl">{$user.displayName}</p>
+          <p class="font-semibold text-xl">{$user.username}</p>
           <p>IDK Yet</p>
         </div>
       </div>
@@ -77,7 +77,7 @@
         Home
       </li>
       </a>
-      <a href="/profile">
+      <a href="/profile/{$user.uid}">
         <li
         class="py-4 w-full border-y-2 border-y-base-100 hover:bg-base-100 cursor-pointer"
       >

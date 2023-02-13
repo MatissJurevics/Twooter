@@ -1,20 +1,46 @@
 <script>
-  import { auth } from "../../../firebase.js";
+  import { auth, db } from "../../../firebase.js";
   import FaGoogle from "svelte-icons/fa/FaGoogle.svelte";
   import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+  import { doc, getDoc, setDoc } from "firebase/firestore" 
 
   const provider = new GoogleAuthProvider();
+  
+  
+
 
   const googleLogin = () => {
     signInWithPopup(auth, provider)
-    .then((result) => {
+    .then(async (result) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const token = credential.accessToken;
       // The signed-in user info.
       const user = result.user;
+      console.log(user)
       // IdP data available using getAdditionalUserInfo(result)
       // ...
+      let testRef = doc(db, "Users", user.uid)
+      let testSnap = await getDoc(testRef)
+      // create variable tagName that is user.displayname but a slug
+      let tagName = user.displayName.replace(" ", "_")
+
+      let data = {
+        bannerURL: "",
+        followers: [],
+        following: [],
+        photoURL: user.photoURL,
+        tag: `@${tagName}`,
+        twoots: [],
+        username: user.displayName
+      }
+      if (!testSnap.data()) {
+        setDoc(doc(db, "Users", user.uid), data)
+      }
+
+
+
+
       // redirect to home page
         window.location.href = "/"
     })
