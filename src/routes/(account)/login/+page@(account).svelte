@@ -1,13 +1,20 @@
 <script>
   import { auth, db } from "../../../firebase.js";
-  import FaGoogle from "svelte-icons/fa/FaGoogle.svelte";
+  import { onMount } from "svelte";
   import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
   import { doc, getDoc, setDoc } from "firebase/firestore" 
+  
+  import FaGoogle from "svelte-icons/fa/FaGoogle.svelte"; 
 
   const provider = new GoogleAuthProvider();
   
   
-
+  onMount(() => {
+    auth.onAuthStateChanged(async (userData) => {
+      if (userData) {
+        window.location.href = "/";
+      } 
+  })});
 
   const googleLogin = () => {
     signInWithPopup(auth, provider)

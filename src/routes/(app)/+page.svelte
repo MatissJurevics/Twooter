@@ -22,38 +22,35 @@
       } else {
         let docRef = doc(db, "Users", userData.uid)
         let docSnap = await getDoc(docRef)
-
-        $user = docSnap.data()
-        
+        $user = {
+          ...docSnap.data(),
+          uid: userData.uid
+        }
       }
   })});
 
+  // Query for getTwoots and onSnapshot
+  const twootQuery = query(collection(db, "Twoots"), orderBy("createdAt", "desc"), limit(5));
+  
   // load twoots from firestore
   const getTwoots = async () => {
-    const twootRef = collection(db, "Twoots")
-    const q = query(twootRef, limit(10), orderBy("createdAt", "asc"));
-    const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(twootQuery);
     $twoots = [];
 
     querySnapshot.forEach((doc) => {
-      $twoots = [doc.data(), ...$twoots];
+      $twoots = [...$twoots, doc.data()];
     });
 
     return $twoots;
   };
 
-  let unsub = onSnapshot(collection(db, "Twoots"), (docs) => {
+  let unsub = onSnapshot(twootQuery, (docs) => {
     $twoots = [];
     docs.forEach((doc) => {
-      $twoots = [doc.data(), ...$twoots];
+      $twoots = [...$twoots, doc.data()];
     });
     console.log($twoots);
   });
-
-  // update the wordcount for the wordcounter in the textbox to work
-  const updateCount = () => {
-    count = text.length;
-  };
 
   const handleError = (errCont) => {
     err = true;
@@ -69,7 +66,7 @@
       handleError("Text is invalid (either too long or too short)");
       return;
     }
-    let userRef = doc(db, "Users", "l6dOY7tIpidTxYxwjdQA1NgZ1Z12");
+    let userRef = doc(db, "Users", $user.uid);
     let data = {
       creator: userRef,
       createdAt: Timestamp.now(),
@@ -79,7 +76,7 @@
     let docRef = collection(db, "Twoots")
     await addDoc(docRef, data)
     text = "";
-    updateCount();
+    count = text.length;
   };
 
   
@@ -102,7 +99,7 @@
       <textarea
         class="border- outline-none rounded-3xl p-3 w-full h-64 resize-none text-xl font-light bg-base-300 focus:border-[2px] border-base-content/20"
         bind:value={text}
-        on:input={() => updateCount()}
+        on:input={() => {count = text.length}}
         name=""
         id=""
         placeholder="Write something..."
@@ -135,7 +132,7 @@
     <h1 class="text-5xl my-3 font-bold">Posts</h1>
     
     {#await getTwoots()}
-      <p>loading...</p>
+      <p>Loading...</p>
     {:then two} 
       {#each $twoots as twoot}
         <Post info={twoot} />
@@ -147,3 +144,4 @@
 </main>
 
 <footer />
+
